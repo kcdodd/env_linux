@@ -6,6 +6,8 @@
 # export ZSH_CUSTOM="/path/to/env_linux/oh_my_zsh_custom"
 # . "/path/to/env_linux/.zshrc"
 
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
 ZSH_THEME="agnoster"
 DISABLE_AUTO_UPDATE="true"
 
