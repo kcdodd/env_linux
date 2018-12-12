@@ -90,8 +90,11 @@ load () {
 
 save () {
   # save loaded modules into current virtual_env
-  if [ -d $VIRTUAL_ENV ]; then
+  if [ -n "$VIRTUAL_ENV" ]; then
     module list --terse 2>&1 | tail -n +2 | tr '\n' ' ' > "$VIRTUAL_ENV/modules"
+    echo "Saved modules to $VIRTUAL_ENV/modules"
+  else
+    echo "No virtual environment currently loaded"
   fi
 }
 
