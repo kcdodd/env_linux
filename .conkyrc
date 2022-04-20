@@ -1,0 +1,156 @@
+conky.config = {
+
+-- Use Xft (anti-aliased font and stuff)
+	use_xft = true,
+	font = 'Ubuntu Mono:bold:size=8',
+
+-- Alpha of Xft font. Must be a value at or between 1 and 0
+	xftalpha = 1,
+
+-- Create own window instead of using desktop (required in nautilus)
+	own_window = true,
+  own_window_type = 'normal',
+  own_window_transparent = false,
+	own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+	own_window_argb_visual = true,
+  own_window_argb_value = 0,
+
+-- Use the Xdbe extension? (eliminates flicker)
+-- It is highly recommended to use own window with this one so double buffer won't be so big
+	double_buffer = true,
+	draw_shades = false,
+	draw_outline = false,
+
+-- Draw borders around text
+	draw_borders = false,
+
+-- Border stippling (dashing) in pixels
+	stippled_borders = 0,
+
+-- Border width in pixels
+	border_width = 0,
+
+-- Draw borders around graphs?
+	draw_graph_borders = true,
+
+-- Default colors and also border colors
+	default_color = '#979797',
+	--default_shade_color white
+	--default_outline_color black
+	--own_window_colour 262524
+
+
+-- size of window
+	minimum_width = 400,
+  minimum_height = 880,
+  gap_y = 30,
+
+-- Aligned position on screen, may be top_left, top_right, top_middle, bottom_left, bottom_right, bottom_middle, middle_left, middle_middle, middle_right, or none
+	alignment = 'top_right',
+
+-- Subtract (file system) buffers from used memory?
+	no_buffers = true,
+
+-- Boolean value, if true, text is rendered in upper case
+	uppercase = false,
+
+-- number of cpu samples to average
+-- set to 1 to disable averaging
+-- The number of samples to average for CPU monitoring
+	cpu_avg_samples = 2,
+
+-- The number of samples to average for net data
+	net_avg_samples = 2,
+
+-- Force UTF8? requires XFT
+	override_utf8_locale = true,
+
+-- Adds spaces around certain objects to stop them from moving other things around.
+-- Arguments are left, right, and none (default).
+-- The old true/false values are deprecated and default to right/none respectively.
+-- Note that this only helps if you are using a mono font, such as Bitstream Vera Sans Mono
+	use_spacer = 'right',
+
+-- Size of the standard text buffer (default is 256 bytes).
+-- This buffer is used for intermediary text, such as individual lines, output from $exec vars,
+-- and various other variables.
+-- Increasing the size of this buffer can drastically reduce Conky's performance,
+-- but will allow for more text display per variable.
+-- The size of this buffer cannot be smaller than the default value of 256 bytes
+	text_buffer_size = 2048,
+
+-- colorN. Predefine a color for use inside TEXT segments.
+-- Substitute N by a digit between 0 and 9, inclusively.
+-- When specifying the color value in hex, omit the leading hash (#)
+	color0 = '#000000',--black
+	color1 = '#ffffff',--white
+	color2 = '#96d952',--mint green
+	color3 = '#ca051b',--ubuntu red
+	color4 = '#ff6811',--ubuntu orange
+	color5 = '#fffb1f',--ubuntu yellow
+	color6 = '#06204c',--fedora blue
+	color7 = '#00ff00',--green
+	color8 = '#ff0000',--red
+
+};
+
+conky.text = [[
+${alignr}${color5}${kernel}${color}
+${goto 100}${font Ubuntu Mono:size=50}${goto 120}${time %H}${font Ubuntu Mono:size=20}${voffset -25}${goto 190}:${time %M}${font}
+${font Ubuntu Mono:size=20}${voffset -2}${goto 190} ${time %S}${font}
+${voffset -49}${alignr}${time %A %d}
+${alignr}${time %B %Y}
+${alignr}[ ${uptime} ]
+
+
+${font Ubuntu:style=Bold}${voffset 20}${color #ffa552}Processor ${stippled_hr}${color}${font}
+${goto 20}${cpugraph cpu0 30, 390}
+${goto 20}1 ${goto 30} [ ${cpu cpu1}% ] ${goto 70} ${cpubar cpu1 10,135} ${goto 220} 9 ${goto 230} [ ${cpu cpu9}% ] ${goto 270} ${cpubar cpu9 10,135}
+${goto 20}2 ${goto 30} [ ${cpu cpu2}% ] ${goto 70} ${cpubar cpu2 10,135} ${goto 220} 10 ${goto 230} [ ${cpu cpu10}% ] ${goto 270} ${cpubar cpu10 10,135}
+${goto 20}3 ${goto 30} [ ${cpu cpu3}% ] ${goto 70} ${cpubar cpu3 10,135} ${goto 220} 11 ${goto 230} [ ${cpu cpu11}% ] ${goto 270} ${cpubar cpu11 10,135}
+${goto 20}4 ${goto 30} [ ${cpu cpu4}% ] ${goto 70} ${cpubar cpu4 10,135} ${goto 220} 12 ${goto 230} [ ${cpu cpu12}% ] ${goto 270} ${cpubar cpu12 10,135}
+${goto 20}5 ${goto 30} [ ${cpu cpu5}% ] ${goto 70} ${cpubar cpu5 10,135} ${goto 220} 13 ${goto 230} [ ${cpu cpu13}% ] ${goto 270} ${cpubar cpu13 10,135}
+${goto 20}6 ${goto 30} [ ${cpu cpu6}% ] ${goto 70} ${cpubar cpu6 10,135} ${goto 220} 14 ${goto 230} [ ${cpu cpu14}% ] ${goto 270} ${cpubar cpu14 10,135}
+${goto 20}7 ${goto 30} [ ${cpu cpu7}% ] ${goto 70} ${cpubar cpu7 10,135} ${goto 220} 15 ${goto 230} [ ${cpu cpu15}% ] ${goto 270} ${cpubar cpu15 10,135}
+${goto 20}8 ${goto 30} [ ${cpu cpu8}% ] ${goto 70} ${cpubar cpu8 10,135} ${goto 220} 16 ${goto 230} [ ${cpu cpu16}% ] ${goto 270} ${cpubar cpu16 10,135}
+${font Ubuntu:style=Bold}${voffset 20}${color #ffee52}Memory ${stippled_hr}${color}${font}
+${goto 20}${memgraph 30,390}
+${goto 20}ram ${goto 50}[ ${memperc}% ] ${goto 90}${membar 10,135}
+${goto 20}swap ${goto 50}[ ${swapperc}% ] ${goto 90}${swapbar 10,135}
+    ${alignr}
+
+  ${font Ubuntu:style=Bold}${voffset -5}${color5}Network ${stippled_hr}${color}${font}
+    ${if_existing /proc/net/route wlan0}${wireless_essid wlan0} [${wireless_link_qual_perc wlan0}%]${alignr}${wireless_bitrate wlan0}
+    local ip: ${alignr}${addrs wlan0}
+    ${else}no network connection !${endif}
+
+    ${upspeed wlan0}
+    ${totalup wlan0}
+    ${font Ubuntu Bullets:size=20}${voffset -30}${goto 89}N${font}
+    ${voffset -32}${alignr}${upspeedgraph wlan0 30,135}
+    ${downspeed wlan0}
+    ${totaldown wlan0}
+    ${font Ubuntu Bullets:size=20}${voffset -30}${goto 89}T${font}
+    ${voffset -32}${alignr}${downspeedgraph wlan0 30,135}
+
+  ${font Ubuntu:style=Bold}${voffset -5}${color5}Processes ${stippled_hr}${color}${font}
+    total/running: ${alignr}[${processes} / ${running_processes}]
+    ${voffset 5}name ${goto 140}pid ${goto 180}mem ${goto 220}cpu${font}
+    ${voffset -10}${stippled_hr}${font Ubuntu:size=8}
+      ${top name 1} ${goto 140}${top pid 1} ${goto 180} ${top cpu 1} ${goto 220} ${top mem 1}
+      ${top name 2} ${goto 140}${top pid 2} ${goto 180} ${top cpu 2} ${goto 220} ${top mem 2}
+      ${top name 3} ${goto 140}${top pid 3} ${goto 180} ${top cpu 3} ${goto 220} ${top mem 3}
+      ${top name 4} ${goto 140}${top pid 4} ${goto 180} ${top cpu 4} ${goto 220} ${top mem 4}
+      ${top name 5} ${goto 140}${top pid 5} ${goto 180} ${top cpu 5} ${goto 220} ${top mem 5}${font}
+
+  ${font Ubuntu:style=Bold}${voffset -5}${color5}Filesystem ${stippled_hr}${color}${font}
+    boot ${goto 85}[${fs_used_perc /boot}%] ${fs_bar 8,125 /boot}${font Ubuntu:size=8}
+        ${fs_type /boot}  ${goto 125}${fs_used /boot} / ${fs_size /boot} ${font}
+    root ${goto 85}[${fs_used_perc /}%] ${fs_bar 8,125 /}${font Ubuntu:size=8}
+        ${fs_type /}  ${goto 125}${fs_used /} / ${fs_size /} ${font}
+    home ${goto 85}[${fs_used_perc /home}%] ${fs_bar 8,125 /home}${font Ubuntu:size=8}
+        ${fs_type /home}  ${goto 125}${fs_used /home} / ${fs_size /home} ${font}
+
+]];
+--${if_mounted /media/C2EF-0549}removable ${goto 85}[${fs_used_perc /media/C2EF-0549}%] ${fs_bar 8,125 /media/C2EF-0549}${font Ubuntu:size=8}
+--${fs_type /media/C2EF-0549}  ${goto 125}${fs_used /media/C2EF-0549} / ${fs_size /media/C2EF-0549} ${font}${endif}
