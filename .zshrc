@@ -6,6 +6,20 @@
 # export ZSH_CUSTOM="/path/to/env_linux/oh_my_zsh_custom"
 # . "/path/to/env_linux/.zshrc"
 
+# Initialize environment modules
+# source /usr/share/modules/init/zsh
+# source /usr/local/Modules/3.2.10/init/zsh
+
+if [ -d /etc/profile.d ]; then
+  for i in /etc/profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+
+
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 ZSH_THEME="agnoster"
@@ -19,17 +33,17 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-# Initialize environment modules
-source /usr/share/modules/init/zsh
+
 
 # Generalized environment cleaning
 purge () {
   #echo "Deactivating virtual environment and purging modules"
-  module purge
-
   if typeset -f deactivate > /dev/null; then
     deactivate
   fi
+
+  # must be done in reverse order as load_venv
+  module purge
 }
 
 # Generalized environment loading
@@ -40,10 +54,6 @@ load_venv() {
       deactivate
     fi
 
-    # activate the virtual environment
-    source "$1/bin/activate"
-
-    echo "$VIRTUAL_ENV"
 
   fi
 
@@ -53,6 +63,16 @@ load_venv() {
     module load $(cat "$1/modules")
     module list
   fi
+
+  if [ -f "$1/bin/activate" ]; then
+
+    # activate the virtual environment
+    source "$1/bin/activate"
+
+    echo "$VIRTUAL_ENV"
+
+  fi
+
 }
 
 load () {
@@ -96,6 +116,29 @@ save () {
   else
     echo "No virtual environment currently loaded"
   fi
+}
+
+svn_add_new() {
+  svn st | grep '^?' | awk '{print $2}' | xargs svn add
+}
+
+svn_rm_deleted() {
+  svn st | grep '^!' | awk '{print $2}' | xargs svn delete --force
+}
+
+svn_set_id() {
+  svn ps svn:keywords 'Id' $1
+}
+
+pip_uninstall() {
+  # uninstalls all packages matching a given patthern
+  # if no pattern, then removes all installed packages
+  if [ ! $1 ]; then
+    pip freeze | sed 's/^\([a-zA-Z0-9\_\.-]*\)\(.*\)$/\1/g' | xargs pip uninstall -y
+  else
+    pip freeze | grep $1 | sed 's/^\([a-zA-Z0-9\_\.-]*\)\(.*\)$/\1/g' | xargs pip uninstall -y
+  fi
+
 }
 
 unsetopt share_history
