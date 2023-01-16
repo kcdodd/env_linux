@@ -50,29 +50,34 @@ psalive () {
 sshid () {
   local AGENT_FILE="$HOME/.ssh/sshid_run"
 
-  psalive $SSH_AGENT_PID
+  # test if agent is available
+  ssh-add -l &>/dev/null
 
-  if [[ -n $SSH_AGENT_PID && $? -ne 0 ]]; then
-    echo "Agent pid $SSH_AGENT_PID no longer running"
-    unset SSH_AGENT_PID
-  fi
+  if [[ $? -eq 2 ]]; then
+    # not available
 
-  if [[ (-z $SSH_AGENT_PID || -z $SSH_AUTH_SOCK) && -f $AGENT_FILE ]]; then
-    # environment variables not set, but there appears to be an agent file
-    echo "Loading existing agent variables from $AGENT_FILE"
-    source $AGENT_FILE || return 1
-
-    psalive $SSH_AGENT_PID
-
-    if [[ -n $SSH_AGENT_PID && $? -ne 0 ]]; then
-      echo "Loaded agent pid $SSH_AGENT_PID no longer running"
+    if [[ -n $SSH_AGENT_PID ]]; then
+      # bad environment variable
+      echo "Agent pid $SSH_AGENT_PID not available"
       unset SSH_AGENT_PID
+    fi
+
+    if [[ (-z $SSH_AGENT_PID || -z $SSH_AUTH_SOCK) && -f $AGENT_FILE ]]; then
+      # environment variables not set, but there appears to be an agent file
+      echo "Loading existing agent variables from $AGENT_FILE"
+      source $AGENT_FILE || return 1
+
+      ssh-add -l &>/dev/null
+
+      if [[ $? -eq 2 ]]; then
+        echo "Loaded agent pid $SSH_AGENT_PID not available"
+        unset SSH_AGENT_PID
+        rm $AGENT_FILE
+      fi
     fi
   fi
 
-  psalive $SSH_AGENT_PID
-
-  if [[ -n $SSH_AGENT_PID && -n $SSH_AUTH_SOCK && $? -eq 0 ]]; then
+  if [[ -n $SSH_AGENT_PID ]]; then
     # environment variables set, but make sure it's actually running
     echo "Agent pid $SSH_AGENT_PID still running"
 
@@ -96,10 +101,10 @@ sshid () {
 
   else
     echo "Adding default"
-    ssh-add
+    ssh-add || return 1
   fi
 
-  ssh-add -l
+  ssh-add -l || return 1
 }
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -117,7 +122,7 @@ sshkill () {
   unset SSH_AUTH_SOCK
 
   if [[ -f $AGENT_FILE ]]; then
-    rm "$HOME/.ssh/sshid_run"
+    rm $AGENT_FILE
   fi
 }
 
